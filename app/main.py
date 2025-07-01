@@ -1,13 +1,18 @@
 import streamlit as st
 import pandas as pd
 
-from auth import Auth
-from db import FlashcardDB
-from components import (
+from app.auth import Auth
+from app.db import FlashcardDB
+from app.components import (
     render_flashcard,
     render_add_flashcard_form,
     render_flashcard_stats,
     render_auth_forms,
+)
+from app.chat_components import (
+    render_tutor_chat,
+    render_learning_report,
+    render_chat_history,
 )
 
 # Page configuration
@@ -79,8 +84,10 @@ def main():
                 default=["to-learn", "once-checked", "twice-checked"],
             )
 
-        # Main content area
-        tab1, tab2, tab3 = st.tabs(["Due for Review", "All Flashcards", "Add New"])
+        # Main content area - create tabs for flashcard related functions
+        tab1, tab2, tab3 = st.tabs(
+            ["Due for Review", "All Flashcards", "Add New"]
+        )
 
         with tab1:
             st.subheader("Flashcards Due for Review")
@@ -192,6 +199,40 @@ def main():
             st.divider()
             all_cards = FlashcardDB.get_flashcards(user_id)
             render_flashcard_stats(all_cards)
+        
+        # Add page navigation in sidebar
+        st.sidebar.divider()
+        page = st.sidebar.selectbox(
+            "Navigation",
+            ["Flashcards", "Tutor Chat"],
+            index=0,
+            key="navigation"
+        )
+        
+        # Hide flashcard tabs if we're on the Tutor Chat page
+        if page == "Tutor Chat":
+            # Clear the main area
+            st.empty()
+            
+            # Create a new container for the tutor chat page
+            # This ensures we're at the top level for chat_input
+            st.header("Language Learning Tutor")
+            
+            # Target language selection
+            language_options = ["German", "French", "Spanish", "Italian", "Japanese", "Chinese", "Korean"]
+            selected_language = st.selectbox("Select Language", language_options, index=0)
+            
+            # Initialize session state for language if not already set
+            if "selected_lang" not in st.session_state:
+                st.session_state.selected_lang = selected_language
+            else:
+                # Only update if changed
+                if selected_language != st.session_state.selected_lang:
+                    st.session_state.selected_lang = selected_language
+            
+            # Create a separate function for displaying chat outside of any containers
+            from app.chat_page import display_chat_page
+            display_chat_page(user_id, st.session_state.selected_lang)
 
 
 if __name__ == "__main__":
