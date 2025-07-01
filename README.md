@@ -95,13 +95,6 @@ The application implements an effective memory management strategy based on cogn
 
 
 ---
-
-## Database Schema
-
-![Supabase Database Schema](demo/supabase-schema.png)
-
-The app uses a Supabase PostgreSQL database. You'll need to set up your database tables as described in the SQL Setup section at the bottom of this README.
-
 ## AI Language Tutor
 
 The application features an AI-powered language tutor with the following capabilities:
@@ -138,11 +131,18 @@ To use the AI tutor feature, you must:
 
 ---
 
-## SQL Setup for Supabase
+## Database Schema
+
+![Supabase Database Schema](demo/supabase-schema.png)
+
+The app uses a Supabase PostgreSQL database. You'll need to set up your database tables as described in the SQL Setup section at the bottom of this README.
+
+
+### SQL Setup for Supabase
 
 The following SQL commands need to be executed in your Supabase project's SQL Editor to set up the necessary database schema. This only needs to be done once during initial setup.
 
-### 1. Learning Status ENUM Type
+#### 1. Learning Status ENUM Type
 
 ```sql
 CREATE TYPE learning_status AS ENUM (
@@ -153,7 +153,7 @@ CREATE TYPE learning_status AS ENUM (
 );
 ```
 
-### 2. Flashcards Table
+#### 2. Flashcards Table
 
 ```sql
 CREATE TABLE IF NOT EXISTS public.flashcards (
@@ -171,7 +171,7 @@ CREATE INDEX IF NOT EXISTS idx_flashcards_status ON public.flashcards(status);
 CREATE INDEX IF NOT EXISTS idx_flashcards_next_review_at ON public.flashcards(next_review_at);
 ```
 
-### 3. Chat History Table
+#### 3. Chat History Table
 
 ```sql
 CREATE TABLE IF NOT EXISTS public.chat_history (
@@ -186,7 +186,7 @@ CREATE INDEX IF NOT EXISTS idx_chat_history_user_id ON public.chat_history(user_
 CREATE INDEX IF NOT EXISTS idx_chat_history_created_at ON public.chat_history(created_at);
 ```
 
-### 4. Updated_at Trigger Function
+#### 4. Updated_at Trigger Function
 
 ```sql
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -201,3 +201,4 @@ CREATE TRIGGER update_flashcards_updated_at
 BEFORE UPDATE ON flashcards
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();
+
