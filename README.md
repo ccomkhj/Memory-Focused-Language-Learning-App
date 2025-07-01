@@ -2,7 +2,6 @@
 
 A language learning application with scientifically-backed spaced repetition flashcards and an AI language tutor to help you learn vocabulary and phrases effectively.
 
-![dashboard](demo/dashboard.png)
 ![dashboard2](demo/chatbot_tutor.png)
 
 ## Features
