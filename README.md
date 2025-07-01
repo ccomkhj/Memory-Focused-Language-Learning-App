@@ -3,6 +3,7 @@
 A language learning application with scientifically-backed spaced repetition flashcards and an AI language tutor to help you learn vocabulary and phrases effectively.
 
 ![dashboard](demo/dashboard.png)
+![dashboard2](demo/chatbot_tutor.png)
 
 ## Features
 
@@ -38,7 +39,7 @@ This carefully timed sequence leverages the psychological spacing effect to stre
    pip install -r requirements.txt
    ```
 3. Set up a Supabase project at [supabase.com](https://supabase.com)
-4. Execute the SQL commands below to create your database schema
+4. Execute the SQL setup in your Supabase SQL Editor (see SQL Setup section at bottom of README)
 5. Create a `.env` file in the root directory with the following variables:
 
    ```bash
@@ -100,7 +101,47 @@ The application implements an effective memory management strategy based on cogn
 
 ![Supabase Database Schema](demo/supabase-schema.png)
 
-The app uses a Supabase PostgreSQL database with the following structure:
+The app uses a Supabase PostgreSQL database. You'll need to set up your database tables as described in the SQL Setup section at the bottom of this README.
+
+## AI Language Tutor
+
+The application features an AI-powered language tutor with the following capabilities:
+
+- **Interactive Conversations**: Practice your target language with a responsive tutor that adapts to your learning level.
+- **Personalized Learning**: The tutor analyzes your flashcards to focus on your specific vocabulary needs.
+- **Progress Reports**: After each conversation, receive a detailed analysis of your strengths, weaknesses, and suggestions for improvement.
+- **Chat History**: Review your previous conversations and learning progress over time.
+
+### Using the Tutor Chat
+
+1. Select your target language from the dropdown menu.
+2. Type your question or message in the chat input at the bottom of the page.
+3. The AI tutor will respond with helpful explanations, examples, or corrections.
+4. After your conversation, check the Learning Progress Report for insights and recommendations.
+5. Your chat history is saved automatically for future reference.
+
+### Technical Implementation
+
+The AI tutor is built using:
+
+- CrewAI for agent-based conversational AI
+- OpenAI's GPT-4 for natural language processing
+- Supabase for chat history storage and retrieval
+- Streamlit for the user interface
+
+### Requirements
+
+To use the AI tutor feature, you must:
+
+1. Have a valid OpenAI API key in your `.env` file
+2. Install all required dependencies from requirements.txt
+3. Set up your Supabase database using the SQL commands provided in the SQL Setup section at the bottom of this README
+
+---
+
+## SQL Setup for Supabase
+
+The following SQL commands need to be executed in your Supabase project's SQL Editor to set up the necessary database schema. This only needs to be done once during initial setup.
 
 ### 1. Learning Status ENUM Type
 
@@ -148,40 +189,6 @@ CREATE INDEX IF NOT EXISTS idx_chat_history_created_at ON public.chat_history(cr
 
 ### 4. Updated_at Trigger Function
 
-## AI Language Tutor
-
-The application features an AI-powered language tutor with the following capabilities:
-
-- **Interactive Conversations**: Practice your target language with a responsive tutor that adapts to your learning level.
-- **Personalized Learning**: The tutor analyzes your flashcards to focus on your specific vocabulary needs.
-- **Progress Reports**: After each conversation, receive a detailed analysis of your strengths, weaknesses, and suggestions for improvement.
-- **Chat History**: Review your previous conversations and learning progress over time.
-
-### Using the Tutor Chat
-
-1. Select your target language from the dropdown menu.
-2. Type your question or message in the chat input at the bottom of the page.
-3. The AI tutor will respond with helpful explanations, examples, or corrections.
-4. After your conversation, check the Learning Progress Report for insights and recommendations.
-5. Your chat history is saved automatically for future reference.
-
-### Technical Implementation
-
-The AI tutor is built using:
-
-- CrewAI for agent-based conversational AI
-- OpenAI's GPT-4 for natural language processing
-- Supabase for chat history storage and retrieval
-- Streamlit for the user interface
-
-### Requirements
-
-To use the AI tutor feature, you must:
-
-1. Have a valid OpenAI API key in your `.env` file
-2. Run the SQL commands to create the chat_history table in your Supabase project
-3. Install all required dependencies from requirements.txt
-
 ```sql
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -195,13 +202,3 @@ CREATE TRIGGER update_flashcards_updated_at
 BEFORE UPDATE ON flashcards
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();
-```
-
-### 4. Indexes for Performance
-
-```sql
-CREATE INDEX idx_flashcards_user_id ON flashcards (user_id);
-CREATE INDEX idx_flashcards_status ON flashcards (status);
-CREATE INDEX idx_flashcards_user_status_next_review ON flashcards (user_id, status, next_review_at)
-WHERE status != 'fully-memorized';
-```
