@@ -1,6 +1,8 @@
-# Language Learning App
+# Memory-Focused Language Learning App
 
 A flashcard-based language learning application with scientifically-backed spaced repetition to help you learn vocabulary and phrases effectively.
+
+![dashboard](demo/dashboard.png)
 
 ## Features
 

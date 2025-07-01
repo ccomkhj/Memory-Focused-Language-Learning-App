@@ -12,7 +12,7 @@ from components import (
 
 # Page configuration
 st.set_page_config(
-    page_title="German Language Learning App",
+    page_title="Language Learning App",
     page_icon="🇩🇪",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -22,7 +22,7 @@ st.set_page_config(
 def main():
     # Initialize session state
     Auth.initialize_session_state()
-    
+
     # Initialize app state variables
     if "update_flashcard" not in st.session_state:
         st.session_state.update_flashcard = False
@@ -30,7 +30,7 @@ def main():
         st.session_state.delete_flashcard = False
 
     # Application header
-    st.title("🇩🇪 German Language Learning App")
+    st.title("Language Learning App")
 
     # Check if user is authenticated
     if not Auth.check_user_authenticated():
@@ -87,7 +87,7 @@ def main():
 
             # Get cards due for review
             due_cards = FlashcardDB.get_due_flashcards(user_id)
-            
+
             # Check if we need to refresh the page
             if st.session_state.update_flashcard or st.session_state.delete_flashcard:
                 st.session_state.update_flashcard = False
@@ -98,10 +98,14 @@ def main():
                 for card in due_cards:
                     render_flashcard(
                         card,
-                        on_update=lambda id, status: [FlashcardDB.update_flashcard_status(id, status), 
-                                              setattr(st.session_state, "update_flashcard", True)],
-                        on_delete=lambda id: [FlashcardDB.delete_flashcard(id), 
-                                            setattr(st.session_state, "delete_flashcard", True)],
+                        on_update=lambda id, status: [
+                            FlashcardDB.update_flashcard_status(id, status),
+                            setattr(st.session_state, "update_flashcard", True),
+                        ],
+                        on_delete=lambda id: [
+                            FlashcardDB.delete_flashcard(id),
+                            setattr(st.session_state, "delete_flashcard", True),
+                        ],
                     )
             else:
                 st.info("No cards due for review! 🎉")
