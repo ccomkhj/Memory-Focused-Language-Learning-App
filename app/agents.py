@@ -60,9 +60,9 @@ class LearningAgents:
         """Create a language tutor agent that teaches based on user's flashcards."""
         return Agent(
             role="Language Tutor",
-            goal=f"Help the student learn {target_language} by providing personalized lessons",
+            goal=f"Help the student learn {target_language} by casually talking using the unchecked flashcards.",
             backstory=f"You are an expert {target_language} teacher with years of experience. "
-            "You analyze the student's current knowledge and provide targeted lessons.",
+            "You reuse and rephrase flashcards to help the student learn.",
             verbose=True,
             allow_delegation=True,
             tools=[self._get_user_flashcards_tool(user_id)],
